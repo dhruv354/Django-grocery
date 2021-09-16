@@ -11,7 +11,11 @@ class Grocery(models.Model):
     time = models.DateTimeField(default=datetime.now())
 
     class Meta:
-        verbose_name = 'grocerie'
+        verbose_name = 'Groceries'
+        
+    def __str__(self):
+        return self.name
+    
 
 class Person(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

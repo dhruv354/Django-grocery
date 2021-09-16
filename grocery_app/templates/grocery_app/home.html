@@ -1,0 +1,70 @@
+{% extends 'grocery_app/layout.html' %}
+{% block body %}
+    <div class="container-fluid main-div">
+ 
+    <h1 class='section-header'> Welcome to Grocery Store!! </h1>
+    <div class='item-adder-div'>
+    <h1>View Grocery List</h1>
+    <a class='add-item' href="{% url 'create-grocery' %}">Add item</a>
+    </div>
+    <div class='store-header'>
+        {% for grocery in groceries %}
+            <div class='child'>
+                <div class='grocery-content'>
+                    <h1 class='grocery-name name'>{{grocery.name}}<h1></br>
+                    <h4 class='grocery-name'>{{grocery.price}} Rs</h4></br>
+                    <h4 class='grocery-name'>{{grocery.quantity}} Pcs</h4></br>
+                    <p class='grocery-name'>{{grocery.time}}</p></br>
+                    <a class="btn btn-primary" href="{% url 'update-grocery' grocery.id%}">Update</a>
+                    <a class="btn btn-danger" href="{% url 'delete-grocery' grocery.id%}">Delete</a>
+
+                    
+                </div>
+            </div> 
+{% comment %} 
+            <div class='child'>
+                <div class='grocery-content'>
+                    <h1 class='grocery-name'>{{grocery.name}}<h1></br>
+                    <h4 class='grocery-name'>{{grocery.price}}</h4></br>
+                    <h4 class='grocery-name'>{{grocery.quantity}}</h4></br>
+                    <p class='grocery-name'>{{grocery.time}}</p></br>
+                     
+                      <button type="button" class="btn btn-primary">Update</button>
+                      <button type="button" class="btn btn-danger">Delete</button>
+
+                  
+                </div>
+            </div> 
+
+            <div class='child'>
+                <div class='grocery-content'>
+                    <h1 class='grocery-name'>{{grocery.name}}<h1></br>
+                    <h4 class='grocery-name'>{{grocery.price}}</h4></br>
+                    <h4 class='grocery-name'>{{grocery.quantity}}</h4></br>
+                    <p class='grocery-name'>{{grocery.time}}</p></br>
+                     
+                      <button type="button" class="btn btn-primary">Update</button>
+                      <button type="button" class="btn btn-danger">Delete</button>
+
+               
+                </div>
+            </div> 
+
+             <div class='child'>
+                <div class='grocery-content'>
+                    <h1 class='grocery-name'>{{grocery.name}}<h1></br>
+                    <h4 class='grocery-name'>{{grocery.price}}</h4></br>
+                    <h4 class='grocery-name'>{{grocery.quantity}}</h4></br>
+                    <p class='grocery-name'>{{grocery.time}}</p></br>
+                    
+                      <button type="button" class="btn btn-primary">Update</button>
+                      <button type="button" class="btn btn-danger">Delete</button>
+
+                   
+                </div>
+            </div>  {% endcomment %}
+        {% endfor %}
+    <div>
+   
+   </div>
+{% endblock body %}

@@ -1,0 +1,18 @@
+
+{% extends 'grocery_app/layout.html' %} 
+{% load crispy_forms_tags %}
+{% block body %}
+<div class="content-section p-20">
+  <form method="POST">
+    {% csrf_token %}
+    <fieldset>
+      <legend>Delete this grocery</legend>
+      <h2>Sure to delete  grocery - {{grocery.name}}?</h2>
+    </fieldset>
+    <div class="form-group">
+      <button class="btn btn-outline-danger" type="submit">Yes, Delete</button>
+      <a href = {% url 'home' %} class="btn btn-outline-secondary">Cancel</a>
+    </div> 
+  </form>
+</div>
+{% endblock  %}

@@ -1,89 +1,73 @@
 body {
-    background: #fafafa;
-    color: #333333;
-    margin-top: 5rem;
+    background-color: #fff8e7;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    color: #444444;
+.section-header {
+    text-align: center;
+    margin: 1.5rem;
 }
 
-ul {
-    margin: 0;
+.item-adder-div {
+    margin-left: 12rem;
+    width: auto;
+    height: auto;
+    box-sizing: border-box;
 }
 
-.bg-steel {
-    background-color: #5f788a;
+.add-item {
+    text-decoration: underline;
+    color: lightseagreen;
+    font-weight: bold;
 }
 
-.site-header .navbar-nav .nav-link {
-    color: #cbd5db;
+.store-header {
+    margin: 4rem;
+    margin-left: 6rem;
+    margin-right: 6rem;
+    /* margin-top: -5rem; */
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    height: 75vh;
+    width: 100%;
 }
 
-.site-header .navbar-nav .nav-link:hover {
-    color: #ffffff;
+.child {
+    padding: 0;
+    margin: 1rem;
+    flex: 1 0 30%;
+    width: auto;
+    height: auto;
+    /* text-align: center; */
 }
 
-.site-header .navbar-nav .nav-link.active {
-    font-weight: 500;
+.grocery-content {
+    margin: 4rem;
+    padding: 2rem;
+    background-color: #ffffff;
+    width: 350px;
+}
+
+.grocery-content h4 {
+    font-size: medium;
+    color: grey;
+}
+
+.grocery-name {
+    margin-bottom: -1rem;
+}
+
+.name {
+    font-weight: bolder;
+}
+
+button {
+    margin: 0.5rem;
 }
 
 .content-section {
-    background: #ffffff;
-    padding: 10px 20px;
-    border: 1px solid #dddddd;
-    border-radius: 3px;
-    margin-bottom: 20px;
-}
-
-.article-title {
-    color: #444444;
-}
-
-a.article-title:hover {
-    color: #428bca;
-    text-decoration: none;
-}
-
-.article-content {
-    white-space: pre-line;
-}
-
-.article-img {
-    height: 65px;
-    width: 65px;
-    margin-right: 16px;
-}
-
-.article-metadata {
-    padding-bottom: 1px;
-    margin-bottom: 4px;
-    border-bottom: 1px solid #e3e3e3
-}
-
-.article-metadata a:hover {
-    color: #333;
-    text-decoration: none;
-}
-
-.article-svg {
-    width: 25px;
-    height: 25px;
-    vertical-align: middle;
-}
-
-.account-img {
-    height: 125px;
-    width: 125px;
-    margin-right: 20px;
-    margin-bottom: 16px;
-}
-
-.account-heading {
-    font-size: 2.5rem;
+    text-align: center;
+    margin-top: 15vh;
 }
