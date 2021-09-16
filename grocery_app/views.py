@@ -43,5 +43,17 @@ class GroceryListView(LoginRequiredMixin,ListView):
     template_name = 'grocery_app/home.html'
     context_object_name = 'groceries'
     ordering = ['-time']
-    paginate_by = 4
 
+class GroceryCreateView(LoginRequiredMixin, CreateView):
+    model = Grocery
+    fields = ['name', 'price', 'quantity', 'time']
+
+class GroceryUpdateView(LoginRequiredMixin, UpdateView):
+    model = Grocery
+    fields = ['name', 'price', 'quantity']
+
+class GroceryDeleteView(LoginRequiredMixin, DeleteView):
+    model = Grocery
+    success_url = "/"
+
+class PersonGroceryView(LoginRequiredMixin, )
