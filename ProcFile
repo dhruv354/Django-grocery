@@ -1,0 +1,27 @@
+web: gunicorn ReadingRight.wsgi
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ccc
