@@ -40,6 +40,6 @@ class Saved(models.Model):
     groceryList = models.ManyToManyField(GroceryList)
 
     def __str__(self):
-        return self.user + ' saved-list'
+        return str(self.user) + ' saved-list'
 
 

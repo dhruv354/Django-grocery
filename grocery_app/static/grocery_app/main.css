@@ -84,7 +84,14 @@ button {
     margin-top: 5rem;
 }
 
+.form-div {
+    text-align: center
+}
+
 .delete-list {
-    right: 0;
-    text-align: right;
+    position: absolute;
+}
+
+.parent-div-list {
+    position: relative;
 }

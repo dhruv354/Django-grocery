@@ -2,6 +2,13 @@
 
 {% extends 'grocery_app/layout.html' %}
 {% block body %}
+    {% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+    {% endfor %}
+</ul>
+{% endif %}
     <div class="container-fluid main-div">
  
     <h1 class='section-header'> Welcome to Grocery Store!! </h1>
@@ -11,11 +18,12 @@
             <a class='add-item' href="{% url 'create-grocery-list' date %}">Add item</a>
         </div>
         <div class='delete-list'>
-            <a href="">Delete List</a>
+            <a href="{% url 'delete-list' date %}">Delete List</a>
+            <a href="{% url 'save-list' date %}">Save List</a>
         </div>
     </div>
     <div class='store-header'>
-        {% if groceries == None %}
+        {% if groceries is None %}
             <p> No List with this date </p>
         {% elif groceries == 'Na' %}
             <p>Wrong Date  format </p>

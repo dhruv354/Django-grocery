@@ -10,9 +10,9 @@
 
     <div class="container-fluid main-div">
  
-    <h1 class='section-header'> Welcome to your Saved Store!! </h1>
+    <h1 class='section-header'> Welcome to your create listed  </h1>
     <div class='item-adder-div'>
-    <h1>View All Saved Lists</h1>
+    <h1>View All Created Lists</h1>
     </div>
     <div class='store-header'>
         {% for  groceryList in my_list %}
@@ -20,17 +20,12 @@
                 <div class='grocery-content'>
                     <h1 class='grocery-name name'>{{groceryList.user}}<h1></br>
                     <h1 class='grocery-name name'>{{groceryList.time}}<h1></br>
-                    {% comment %} <h4 class='grocery-name'>{{grocery.price}} Rs</h4></br>
-                    <h4 class='grocery-name'>{{grocery.quantity}} Pcs</h4></br>
-                    <p class='grocery-name'>{{grocery.time}}</p></br>{% endcomment %}
                     <a class="btn btn-primary" href="{% url 'see-list-from-saved' groceryList.time|date:'d-m-Y' %}">See List</a>
-                    <a class="btn btn-danger" href="{% url 'delete-list-from-saved' groceryList.id %}">Delete</a> 
+                    <a class="btn btn-danger" href="{% url 'delete-mylist' groceryList.id %}">Delete</a> 
 
                     
                 </div>
             </div> 
         {% endfor %}
-    <div>
-   
-   </div>
-{% endblock body %}
+
+{% endblock %}

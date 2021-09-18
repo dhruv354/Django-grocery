@@ -1,5 +1,6 @@
 from typing import ValuesView
 from django import urls
+from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import MyRegisterForm
@@ -16,6 +17,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import *
 from rest_framework import response
 import datetime
+from django.contrib import messages
+import re
+from rest_framework.response import Response
 
 # Create your views here.
 
@@ -254,7 +258,11 @@ def helper1(request):
 
 def helper(request, date):
     # date.date()
+    
     temp = str(date.date()).split('-')
+    # except AttributeError:
+    #      messages.success(request, 'Wrong date format')
+    #      return redirect("/")
     temp = reversed(temp)
     temp = "-".join(temp)
     input_value = temp
@@ -269,18 +277,22 @@ def helper(request, date):
             context = {
             'groceries' : 'Na'
             }
-            return render(request, 'grocery_app/home2.html', context)
+            messages.success(request, 'wrong date format, try again!!!')
+            return redirect("/")
         date = datetime.datetime.strptime(str(input_value), '%d-%m-%Y')
         print(date.date())
     
     
     temp = GroceryList.objects.filter(user=request.user).filter(time=datetime.datetime.strptime(input_value, '%d-%m-%Y')).first()
     print("here2")
-    if temp == None:
+    print(temp)
+    
+    if temp is  None:
         context = {
             'groceries' : None
         }
-        return render(request, 'grocery_app/home2.html', context)
+        messages.success(request, 'No list with this date create a new list')
+        return redirect("/")
     groceries = GroceryList.objects.filter(user=request.user).filter(time=datetime.datetime.strptime(input_value, '%d-%m-%Y'))[0].groceries.all()
     list = []
     for grocery in groceries:
@@ -292,7 +304,9 @@ def helper(request, date):
     return render(request, 'grocery_app/home2.html', context)
     
         
-
+def helper_(request, date):
+    messages.success(request, 'Wrong date format')
+    return redirect("/")
 
 
 # class PersonGroceryListView(LoginRequiredMixin, ListView):
@@ -358,31 +372,103 @@ def SaveList(request, date):
     temp = "-".join(temp)
     date = datetime.datetime.strptime(temp, '%d-%m-%Y')
     my_list = GroceryList.objects.filter(user=request.user).filter(time=date)[0]
-    saved_list = Saved.objects.filter(user=request.user)
+    try:
+        saved_list = Saved.objects.filter(user=request.user).first()
+    except:
+        saved_list = Saved(user=request.user)
+    if saved_list is None:
+        saved_list = Saved(user=request.user)
+    saved_list.save()
+    print(saved_list)
+    print(saved_list.id)
     saved_list.groceryList.add(my_list)
     saved_list.save()
+    messages.success(request, 'List Successfully saved')
     return redirect("/view-grocery/" + temp)
 
-class NewList(LoginRequiredMixin, CreateView):
-    model = GroceryList
-    fields = ['time']
-    success_url = '/'
-    login_url = 'login/'
-    template_name = 'create_new_list.html'
+# class NewList(LoginRequiredMixin, CreateView):
+#     model = GroceryList
+#     fields = ['time']
+#     success_url = '/'
+#     login_url = 'login/'
+#     template_name = 'create_new_list.html'
 
-    def post(self, request):
-        pass
+#     def post(self, request):
+#         pass
 
 def NewListTemplate(request):
     return render(request, 'grocery_app/create_new_list.html')
 
 def CreateNewList(request):
     input_value = request.GET.get('search-text')
+    print(input_value)
+    result = re.match('\d{2}-\d{2}-\d{4}', input_value)
+    if result is None:
+        messages.success(request, 'Wrong Date format')
+        return redirect('/')
     date = datetime.datetime.strptime(str(input_value), '%d-%m-%Y').date()
+    print(date)
+    temp = GroceryList.objects.filter(user=request.user).filter(time=date).first()
+    if temp is not None:
+         return redirect('/view-grocery/' + input_value)
     x = GroceryList(user=request.user, time=date)
     x.save()
+    messages.success(request, 'List Successfully Created')
     return redirect('/view-grocery/' + input_value)
+
+def DeleteList(request, date):
+    temp = str(date).split('-')
+    temp = reversed(temp)
+    temp = "-".join(temp)
+    date = datetime.datetime.strptime(temp, '%d-%m-%Y')
+    my_list = GroceryList.objects.filter(user=request.user).filter(time=date)
+    my_list.delete()
+    messages.success(request, 'List Successfully deleted')
+    return redirect('/')
+
+
+def MySavedList(request):
+    # login_url = 'login/'
+    # model = Saved
+    # template_name = 'grocery_app/saved.html'
+    # context_object_name = 'SavedList'
+    saved_list = Saved.objects.filter(user=request.user).first().groceryList.all()
+    print(saved_list)
+    time = []
+    for i in saved_list:
+        time.append(i.time)
+    context = {
+        'my_list' : saved_list,
+        'time' : time,
+    }
+    return render(request, 'grocery_app/saved.html', context)
+
 
         
 
+
+def helper2(request, date):
+    return redirect('/view-grocery/' + date)
+
+def helper3(request, pk):
+    list = GroceryList.objects.filter(id=pk).first()
+    saved_list = Saved.objects.filter(user=request.user).first()
+    saved_list.groceryList.remove(list)
+    saved_list.save()
+    messages.success(request, 'List Successfully removed from saved')
+    return redirect('my-saved-list')
+
+class AllList(LoginRequiredMixin, ListView):
+    model = GroceryList
+    fields = ['time', 'user']
+    template_name = 'grocery_app/mylists.html'
+    login_url = 'login/'
+    context_object_name = 'my_list'
+
+def DeletemyList(request, pk):
+    list = GroceryList.objects.filter(id=pk)
+    list.delete()
+    messages.success(request, 'your List Successfully deleted')
+    return redirect('/all-created-list')
+   
 

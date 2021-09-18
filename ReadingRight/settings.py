@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'grocery_app',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +123,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = '/'
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

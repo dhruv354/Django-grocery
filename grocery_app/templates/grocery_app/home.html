@@ -2,6 +2,14 @@
 
 {% extends 'grocery_app/layout.html' %}
 {% block body %}
+   {% if messages %}
+    <ul class="messages">
+    {% for message in messages %}
+    <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
     <div class="container-fluid main-div">
  
     <h1 class='section-header'> Welcome to Grocery Store!! </h1>
@@ -70,3 +78,11 @@
    
    </div>
 {% endblock body %}
+
+<script>
+    setTimeout(function(){
+        if ($('.messages').length > 0) {
+            $('.messages').remove();
+        }
+    }, 2000)    // 2000 millisecond
+</script>
