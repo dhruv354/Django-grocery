@@ -15,7 +15,6 @@ from django.views.generic import (
 )
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import *
-from rest_framework import response
 import datetime
 from django.contrib import messages
 import re
