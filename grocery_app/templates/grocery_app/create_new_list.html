@@ -1,0 +1,28 @@
+{% extends 'grocery_app/layout.html' %}
+
+{% block body %}
+    <div class='container-fluid'>
+        <form  action='/create-new-list'>
+            <input class="form-control me-2" name='search-text' type="search" placeholder="dd-mm-yyyy" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit" >Submit</button>
+      </form>
+    </div>
+{% endblock body %} 
+
+{% comment %} 
+{% extends 'grocery_app/layout.html' %} 
+{% load crispy_forms_tags %}
+{% block body %}
+<div class="content-section p-20">
+  <form method="POST">
+    {% csrf_token %}
+    <fieldset>
+      <legend>Create New List</legend>
+      {{ form|crispy }}
+    </fieldset>
+    <div class="form-group">
+      <button class="btn btn-outline-info" type="submit">Create</button>
+    </div>
+  </form>
+</div>
+{% endblock  %} {% endcomment %}

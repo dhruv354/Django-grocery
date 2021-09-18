@@ -1,0 +1,16 @@
+{% extends 'grocery_app/layout.html' %} 
+{% load crispy_forms_tags %}
+{% block body %}
+<div class="content-section p-20">
+  <form method="POST">
+    {% csrf_token %}
+    <fieldset>
+      <legend>Add new item to the list</legend>
+      {{ form|crispy }}
+    </fieldset>
+    <div class="form-group">
+      <button class="btn btn-outline-info" type="submit">Create</button>
+    </div>
+  </form>
+</div>
+{% endblock  %}

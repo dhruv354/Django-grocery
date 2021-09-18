@@ -1,0 +1,16 @@
+{% extends 'grocery_app/layout.html' %}
+
+{% block body %}
+    <datalist id="mylist">
+        {% for grocery in groceries %}
+            <option value={{grocery}}>
+        {% endfor %}
+    </datalist>     
+    <div id='form-div'>
+        <form class='div-form' action='/add-grocery-list-item'>
+            <input class="" name='item'  type="search" list="mylist" required>
+            <input class="" name='date' value={{date}} readonly='readonly'>
+            <button class="btn btn-outline-success" type="submit" >Submit</button>
+      </form>
+    </div>
+{% endblock body %}

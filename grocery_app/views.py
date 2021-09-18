@@ -1,7 +1,10 @@
+from typing import ValuesView
+from django import urls
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import MyRegisterForm
 from django.urls import reverse
+from django.http import HttpResponseRedirect
 from django.views.generic import (
     ListView, 
     DetailView, 
@@ -12,6 +15,7 @@ from django.views.generic import (
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .models import *
 from rest_framework import response
+import datetime
 
 # Create your views here.
 
@@ -35,20 +39,32 @@ def home(request):
     if not User.is_authenticated():
         return redirect('login')
     context = {
-        'groceries': Grocery.objects.all().order_by('-time')
+        'groceries': Grocery.objects.all()
     }
     return render(request, 'grocery_app/home.html', context)
 
 
-class GroceryListView(LoginRequiredMixin,ListView):
+# def home2(request):
+#     if not User.is_authenticated():
+#         return redirect('login')
+#     context = {
+#         'GroceryList': GroceryList.objects.filter(user=request.user)[0]
+#     }
+#     return render(request, 'grocery_app/home.html', context)
+
+
+class GroceryItemListView(LoginRequiredMixin,ListView):
+    login_url = 'login/'
     model = Grocery
     template_name = 'grocery_app/home.html'
     context_object_name = 'groceries'
-    ordering = ['-time']
+    # ordering = ['-time']
+
 
 class GroceryCreateView(LoginRequiredMixin, CreateView):
+    login_url = 'login/'
     model = Grocery
-    fields = ['name', 'price', 'quantity', 'time']
+    fields = ['name', 'price', 'quantity']
     success_url = '/'
     # template_name = 'grocery_app/home.html'
 
@@ -58,67 +74,315 @@ class GroceryCreateView(LoginRequiredMixin, CreateView):
        
 
 class GroceryUpdateView(LoginRequiredMixin, UpdateView):
+    login_url = 'login/'
     model = Grocery
-    fields = ['name', 'price', 'quantity']
+    fields = ['name', 'price', 'quantity', 'status']
     success_url = '/'
+   
+    
 
-    def test_func(self):
-        post = self.get_object()
-        if self.request.is_superuser:
-            return True
-        return False
+    # def test_func(self):
+    #     post = self.get_object()
+    #     if self.request.is_superuser:
+    #         return True
+    #     return False
+
+class GroceryUpdateViewList(LoginRequiredMixin, UpdateView):
+    login_url = 'login/'
+    model = Grocery
+    fields = ['quantity', 'status']
+    def get_success_url(self):
+        temp = str(self.kwargs['date']).split('-')
+        temp = reversed(temp)
+        temp = "-".join(temp)
+        return '/view-grocery/' + temp
+
+    def get_object(self, queryset=None):
+        if queryset is None:
+            queryset = self.get_queryset()
+        return Grocery.objects.filter(id=self.kwargs['pk']).first()
+
+# class GroceryDeleteViewList(LoginRequiredMixin, DeleteView):
+#     login_url = 'login/'
+#     model = GroceryList
+
+#     def get_success_url(self):
+#         temp = str(self.kwargs['date']).split('-')
+#         temp = reversed(temp)
+#         temp = "-".join(temp)
+#         return '/view-grocery/' + temp
+
+#     def get_object(self, queryset=None):
+#         if queryset is None:
+#             queryset = self.get_queryset()
+#         temp = str(self.kwargs['date']).split('-')
+#         temp = reversed(temp)
+#         temp = "-".join(temp)
+#         date = datetime.datetime.strptime(temp, '%d-%m-%Y')
+#         return GroceryList.objects.filter(user=self.request.user).filter(time=date).filter(groceries__id=self.kwargs['pk']).first()
+
+# class GroceryCreateViewList(LoginRequiredMixin, CreateView):
+#     model = GroceryList
+#     login_url = 'login/'
+#     fields = ['groceries']
+    
+#     def get_success_url(self):
+#         temp = str(self.kwargs['date']).split('-')
+#         temp = reversed(temp)
+#         temp = "-".join(temp)
+#         return '/view-grocery/' + temp
+    
+#     def get_object(self, queryset=None):
+#         if queryset is None:
+#             queryset = self.get_queryset()
+#         temp = str(self.kwargs['date']).split('-')
+#         temp = reversed(temp)
+#         temp = "-".join(temp)
+#         grocery = self.request.GET.get('groceries')
+#         date = datetime.datetime.strptime(temp, '%d-%m-%Y')
+#         return GroceryList.objects.filter(user=self.request.user).filter(time=date).first()
+    
+#     def get_context_data(self, **kwargs):
+#         data = super().get_context_data(**kwargs)
+#         print(data)
+
+#     def post(self, request, date):
+#         grocery = self.request.GET.get('Groceries')
+#         # print(self.request.body['groceries'])
+#         # print("here")
+#         # print(grocery)
+#         # print(self.get_context_data())
+#         grocery = Grocery.objects.filter(name=grocery)[0]
+#         temp = str(self.kwargs['date']).split('-')
+#         temp = reversed(temp)
+#         temp = "-".join(temp)
+#         grocery = Grocery.objects.get(name=grocery)
+#         date = datetime.datetime.strptime(temp, '%d-%m-%Y')
+#         my_groceries = GroceryList.objects.filter(user=self.request.user).filter(time=date).first()
+#         my_groceries.groceries.add(grocery)
+#         my_groceries.save()
+#         return my_groceries
+
+
+
+def GroceryCreateViewList(request, date):
+    temp = str(date).split('-')
+    temp = reversed(temp)
+    temp = "-".join(temp)
+    groceries = Grocery.objects.all()
+    print("hello")
+    return render(request, 'grocery_app/add_grocery_list_item.html', {'groceries': groceries, 'date': temp})
+
+def AddGroceryListItem(request):
+    date = request.GET.get('date', '')
+    grocery = request.GET.get('item', )
+    print(date)
+    date = datetime.datetime.strptime(date, '%d-%m-%Y')
+    grocery_list = GroceryList.objects.filter(user=request.user).filter(time=date).first()
+    print(grocery_list)
+    grocery = Grocery.objects.filter(name=grocery).first()
+    grocery_list.groceries.add(grocery)
+    grocery_list.save()
+    temp = str(date.date()).split('-')
+    temp = reversed(temp)
+    temp = "-".join(temp)
+    return redirect("/view-grocery/" + temp)
+
+def GroceryDeleteViewList(request, pk, date):
+    temp = str(date).split('-')
+    temp = reversed(temp)
+    temp = "-".join(temp)
+    date = datetime.datetime.strptime(temp, '%d-%m-%Y')
+    my_list = GroceryList.objects.filter(user=request.user).filter(time=date)[0]
+    
+    grocery = Grocery.objects.get(id=pk)
+    my_list.groceries.remove(grocery)
+    my_list.save()
+    return redirect("/view-grocery/" + temp)
+
+
+        
+
+# def GroceryUpdateViewList(request, pk, date):
+
+#     if not request.user.is_authenticated:
+#         return redirect('login')
+#     if not pk:
+#        return redirect('login')
+#     temp = date.split('-')
+#     temp = reversed(temp)
+#     temp = "-".join(temp)
+#     grocery = Grocery.objects.filter(id=pk)[0]
+#     if grocery.status == 'Not available':
+#         return redirect(reverse('view-grocery') + '?search-text=' + temp)
+#     if grocery.status == 'Pending':
+#         grocery.status = 'Bought'
+#     else:
+#         grocery.status = 'Pending'
+#     grocery.save()
+
+#     print(temp)
+#     # try:
+#     #     date = datetime.datetime.strptime(temp, '%d-%m-%y')
+#     # except ValueError as v:
+#     #     print(v)
+#     # print(date)
+#     return redirect(reverse('view-grocery') + '?search-text=' + temp)
+
 
 class GroceryDeleteView(LoginRequiredMixin, DeleteView):
+    login_url = 'login/'
     model = Grocery
     success_url = "/"
 
-class PersonGroceryListView(LoginRequiredMixin, ListView):
-    model = Person
-    template_name = 'grocery_app/saved.html'
-    context_object_name = 'Data'
 
-def PersonSavedList(request):
-    if not User.is_authenticated():
+def GroceryListView(request, time):
+    if not request.user.is_authenticated:
         return redirect('login')
-    context = {
-        'groceries': Person.objects.filter(user=request.user).order_by('-time')
+    groceries = GroceryList.objects.filter(time=datetime.datetime.strptime(time, '%d-%m-%Y'))[0].groceries.all()
+    list = []
+    for grocery in groceries:
+        list.append(grocery)
+    context={
+        'groceries' : list
     }
-    return render(request, 'grocery_app/saved.html', context)
+    return render(request, 'grocery_app/home2.html', context)
 
-def PersonSavedUpdateView(request, id):
-    if not User.is_authenticated():
-        return redirect('login')
-    if not id:
-        print("error")
-        return
-    person = Person.objects.filter(user=request.user).first()
-    grocery = Grocery.objects.filter(id=id).first()
-    person.groceries.add(grocery)
-    person.save()
+def helper1(request):
+    yyyy = request.GET.get('search-text', '')
+    return HttpResponseRedirect('/view-grocery/' + yyyy)
 
+def helper(request, date):
+    # date.date()
+    temp = str(date.date()).split('-')
+    temp = reversed(temp)
+    temp = "-".join(temp)
+    input_value = temp
+    print(input_value)
+    input_value = str(input_value)
+    if input_value == 'N/A':
+        date = datetime.datetime.now().date()
+    else:
+        try:
+            res = datetime.datetime.strptime(str(input_value), '%d-%m-%Y')
+        except ValueError:
+            context = {
+            'groceries' : 'Na'
+            }
+            return render(request, 'grocery_app/home2.html', context)
+        date = datetime.datetime.strptime(str(input_value), '%d-%m-%Y')
+        print(date.date())
+    
+    
+    temp = GroceryList.objects.filter(user=request.user).filter(time=datetime.datetime.strptime(input_value, '%d-%m-%Y')).first()
+    print("here2")
+    if temp == None:
+        context = {
+            'groceries' : None
+        }
+        return render(request, 'grocery_app/home2.html', context)
+    groceries = GroceryList.objects.filter(user=request.user).filter(time=datetime.datetime.strptime(input_value, '%d-%m-%Y'))[0].groceries.all()
+    list = []
+    for grocery in groceries:
+        list.append(grocery)
     context = {
-        'groceries': Person.objects.filter(user=request.user).order_by('-time')
+        'groceries': list,
+        'date' : date.date(),
     }
-    return render(request, 'grocery_app/saved.html', context)
+    return render(request, 'grocery_app/home2.html', context)
+    
+        
+
+
+
+# class PersonGroceryListView(LoginRequiredMixin, ListView):
+#     model = Person
+#     template_name = 'grocery_app/saved.html'
+#     context_object_name = 'Data'
+
+# def PersonSavedList(request):
+#     if not User.is_authenticated():
+#         return redirect('login')
+#     context = {
+#         'groceries': Person.objects.filter(user=request.user).order_by('-time')
+#     }
+#     return render(request, 'grocery_app/saved.html', context)
+
+# def PersonSavedUpdateView(request, id):
+#     if not User.is_authenticated():
+#         return redirect('login')
+#     if not id:
+#         print("error")
+#         return
+#     person = Person.objects.filter(user=request.user).first()
+#     grocery = Grocery.objects.filter(id=id).first()
+#     person.groceries.add(grocery)
+#     person.save()
+
+#     context = {
+#         'groceries': Person.objects.filter(user=request.user).order_by('-time')
+#     }
+#     return render(request, 'grocery_app/saved.html', context)
     
 
-def PersonSavedDeleteView(request, id):
-    if not User.is_authenticated():
-        return redirect('login')
-    if not id:
-        print("error")
-        return
-    person = Person.objects.filter(user=request.user).first()
-    grocery = Grocery.objects.filter(id=id).first()
-    person.groceries.remove(grocery)
-    person.save()
+# def PersonSavedDeleteView(request, id):
+#     if not User.is_authenticated():
+#         return redirect('login')
+#     if not id:
+#         print("error")
+#         return
+#     person = Person.objects.filter(user=request.user).first()
+#     grocery = Grocery.objects.filter(id=id).first()
+#     person.groceries.remove(grocery)
+#     person.save()
 
+#     context = {
+#         'groceries': Person.objects.filter(user=request.user).order_by('-time')
+#     }
+#     return render(request, 'grocery_app/saved.html', context)
+    
+
+
+def CompleteGroceryList(request):
+    groceryList = GroceryList.objects.filter(user=request.user).all()
+    groceries = groceryList.groceries.all()
     context = {
-        'groceries': Person.objects.filter(user=request.user).order_by('-time')
-    }
-    return render(request, 'grocery_app/saved.html', context)
-    
+        'groceryList': groceryList,
+        'groceries' : groceries
+    }    
+    return render(request, 'grocery_app/complete_list.html', context)
 
+def SaveList(request, date):
+    temp = str(date).split('-')
+    temp = reversed(temp)
+    temp = "-".join(temp)
+    date = datetime.datetime.strptime(temp, '%d-%m-%Y')
+    my_list = GroceryList.objects.filter(user=request.user).filter(time=date)[0]
+    saved_list = Saved.objects.filter(user=request.user)
+    saved_list.groceryList.add(my_list)
+    saved_list.save()
+    return redirect("/view-grocery/" + temp)
 
-    
+class NewList(LoginRequiredMixin, CreateView):
+    model = GroceryList
+    fields = ['time']
+    success_url = '/'
+    login_url = 'login/'
+    template_name = 'create_new_list.html'
+
+    def post(self, request):
+        pass
+
+def NewListTemplate(request):
+    return render(request, 'grocery_app/create_new_list.html')
+
+def CreateNewList(request):
+    input_value = request.GET.get('search-text')
+    date = datetime.datetime.strptime(str(input_value), '%d-%m-%Y').date()
+    x = GroceryList(user=request.user, time=date)
+    x.save()
+    return redirect('/view-grocery/' + input_value)
+
+        
+
 

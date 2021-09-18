@@ -1,0 +1,44 @@
+
+
+{% extends 'grocery_app/layout.html' %}
+{% block body %}
+    <div class="container-fluid main-div">
+ 
+    <h1 class='section-header'> Welcome to Grocery Store!! </h1>
+    <div ='parent-div-list'>
+        <div class='item-adder-div'>
+            <h1>View Grocery List</h1>
+            <a class='add-item' href="{% url 'create-grocery-list' date %}">Add item</a>
+        </div>
+        <div class='delete-list'>
+            <a href="">Delete List</a>
+        </div>
+    </div>
+    <div class='store-header'>
+        {% if groceries == None %}
+            <p> No List with this date </p>
+        {% elif groceries == 'Na' %}
+            <p>Wrong Date  format </p>
+        {% else %}
+        {% for grocery in groceries %}
+            <div class='child'>
+                <div class='grocery-content'>
+                    <h1 class='grocery-name name'>{{grocery.name}}<h1></br>
+                    <h4 class='grocery-name'>{{grocery.price}} Rs</h4></br>
+                    <h4 class='grocery-name'>{{grocery.quantity}} Pcs</h4></br>
+                    <h4 class='grocery-status'>{{grocery.status}}</h4></br>
+                    <p class='grocery-name'>{{grocery.time}}</p></br>
+                    <a class="btn btn-primary" href="{% url 'update-grocery-list' grocery.id date %}">Update</a>
+                    <a class="btn btn-danger" href="{% url 'remove-grocery-list' grocery.id date%}">Delete</a>
+
+                    
+                </div>
+            </div> 
+        {% endfor %}
+        {% endif %}
+        
+        
+    <div> 
+   <p>{{list}}</p>
+   </div>
+{% endblock body %}

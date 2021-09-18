@@ -1,0 +1,11 @@
+{% extends 'grocery_app/layout/html' %}
+
+{% block body %}
+    <div class='container-fluid'>
+        <form  action='view-grocery' method='get'>
+            <input class="form-control me-2" name='quantity' placeholder="quantity">
+            <input class="form-control me-2" name='status' placeholder="status">
+            <button class="btn btn-outline-success" type="submit" >Submit</button>
+      </form>
+    </div>
+{% endblock body %}

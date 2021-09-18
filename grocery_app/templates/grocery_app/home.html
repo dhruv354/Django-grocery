@@ -1,10 +1,12 @@
+
+
 {% extends 'grocery_app/layout.html' %}
 {% block body %}
     <div class="container-fluid main-div">
  
     <h1 class='section-header'> Welcome to Grocery Store!! </h1>
     <div class='item-adder-div'>
-    <h1>View Grocery List</h1>
+    <h1>View All Grocery Items</h1>
     <a class='add-item' href="{% url 'create-grocery' %}">Add item</a>
     </div>
     <div class='store-header'>
@@ -21,8 +23,8 @@
                     
                 </div>
             </div> 
-{% comment %} 
-            <div class='child'>
+
+            {% comment %} <div class='child'>
                 <div class='grocery-content'>
                     <h1 class='grocery-name'>{{grocery.name}}<h1></br>
                     <h4 class='grocery-name'>{{grocery.price}}</h4></br>
@@ -62,7 +64,7 @@
 
                    
                 </div>
-            </div>  {% endcomment %}
+            </div>  {% endcomment %} 
         {% endfor %}
     <div>
    

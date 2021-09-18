@@ -71,3 +71,20 @@ button {
     text-align: center;
     margin-top: 15vh;
 }
+
+#form-div {
+    margin-top: 10rem;
+    width: 300px;
+    height: auto;
+    text-align: center;
+}
+
+.div-form input {
+    text-align: center;
+    margin-top: 5rem;
+}
+
+.delete-list {
+    right: 0;
+    text-align: right;
+}
