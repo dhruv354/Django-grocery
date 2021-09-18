@@ -19,7 +19,7 @@ from rest_framework import response
 import datetime
 from django.contrib import messages
 import re
-from rest_framework.response import Response
+
 
 # Create your views here.
 
