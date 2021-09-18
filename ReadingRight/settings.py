@@ -26,9 +26,7 @@ SECRET_KEY = '*-&)#2l&lip%)8bya9!=il8#h#h145=33_^ir-*a$+a!$=)5l*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://grocery-app-django.herokuapp.com',
- 'localhost',
-'127.0.0.1']
+ALLOWED_HOSTS = ['grocery-app-django.herokuapp.com']
 
 
 # Application definition
