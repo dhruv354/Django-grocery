@@ -1,4 +1,4 @@
-web: gunicorn ReadingRight.wsgi
+web: gunicorn ReadingRight.wsgi --log-file -
 
 
 
